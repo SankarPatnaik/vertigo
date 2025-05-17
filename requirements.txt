@@ -1,0 +1,9 @@
+streamlit
+crewai
+faiss-cpu
+langchain
+langchain-community
+sentence-transformers
+pypdf
+numpy
+python-dotenv
