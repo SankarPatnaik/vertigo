@@ -69,8 +69,14 @@ if __name__ == "__main__":
     
     # PDF paths
     pdf_paths = [
-        r"C:\cookie\RAG_DLM\data\Anayasa_English.pdf",
-        r"C:\cookie\RAG_DLM\data\Anayasa-Turkish.pdf"
+        #r"C:\cookie\RAG_DLM\data\Anayasa_English.pdf",
+        #r"C:\cookie\RAG_DLM\data\Anayasa-Turkish.pdf",
+        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\circular.pdf",
+        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\civil_code_1908.pdf",
+        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\Anayasa_English.pdf",
+        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\Anayasa-Turkish.pdf",
+        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\At_A_Glance-ENG.pdf",
+        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\Ebook-one-year-modi-2.0.pdf"
     ]
     
     # Load PDFs
