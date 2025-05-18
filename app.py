@@ -51,6 +51,12 @@ class RAGChatbot:
 
         return chunks, metadatas, scores[0]
 
+    def translate_to_hindi(self, text: str) -> str:
+        """Translate English response to Hindi using a simple prompt to Groq"""
+        prompt = f"Translate the following legal answer into Hindi:\n\n{text}"
+        return self.call_groq_api(prompt)
+
+
 
 
     def get_google_results(self, query, max_results=3):
@@ -136,7 +142,7 @@ def main():
         st.title("⚙️ Settings")
         language = st.selectbox(
             "🌐 Select Language",
-            ["English", "Turkish"],
+            ["English","Hindi", "Turkish"],
             key="language_select"
         )
 
@@ -147,12 +153,32 @@ def main():
         st.markdown("Designed for legal professionals, students, and curious citizens.")
 
     # Page Title
+    #st.markdown(
+    #    f"<h1 style='text-align: center; color: #4A90E2;'>⚖️ {'Constitutional Law Assistant' if language == 'English' else 'Anayasa Hukuku Asistanı'}</h1>",
+    #    unsafe_allow_html=True
+    #)
+    #st.markdown(
+    #    f"<p style='text-align: center;'> {'Ask anything about the Constitution below.' if language == 'English' else 'Anayasayla ilgili her şeyi sorabilirsiniz.'}</p>",
+    #    unsafe_allow_html=True
+    #)
+
+    # Title based on language
+    if language == "English":
+        title = "Constitutional Law Assistant"
+        subtitle = "Ask anything about the Constitution below."
+    elif language == "Hindi":
+        title = "संविधानिक कानून सहायक"
+        subtitle = "नीचे संविधान से संबंधित कोई भी प्रश्न पूछें।"
+    else:  # Turkish
+        title = "Anayasa Hukuku Asistanı"
+        subtitle = "Anayasayla ilgili her şeyi sorabilirsiniz."
+
     st.markdown(
-        f"<h1 style='text-align: center; color: #4A90E2;'>⚖️ {'Constitutional Law Assistant' if language == 'English' else 'Anayasa Hukuku Asistanı'}</h1>",
+        f"<h1 style='text-align: center; color: #4A90E2;'>⚖️ {title}</h1>",
         unsafe_allow_html=True
     )
     st.markdown(
-        f"<p style='text-align: center;'> {'Ask anything about the Constitution below.' if language == 'English' else 'Anayasayla ilgili her şeyi sorabilirsiniz.'}</p>",
+        f"<p style='text-align: center;'>{subtitle}</p>",
         unsafe_allow_html=True
     )
 
@@ -179,10 +205,21 @@ def main():
 
             start_time = time.time()
             chunks, metadatas, scores = chatbot.get_relevant_chunks(prompt)
-            context = "\n\n".join([f"[Score: {score:.2f}] {chunk}" for score, chunk in zip(scores, chunks)])
-
-            with st.spinner("Generating a legal response..."):
+            threshold = 0.4  # Adjust based on experimentation
+            if all(score < threshold for score in scores):
+                context = chatbot.get_google_results(prompt)
+                response = chatbot.generate_answer(prompt, context, language, fallback=True)
+            else:
+                context = "\n\n".join([f"[Score: {score:.2f}] {chunk}" for score, chunk in zip(scores, chunks)])
                 response = chatbot.generate_answer(prompt, context, language)
+                if language == "Hindi":
+                    response = chatbot.translate_to_hindi(response)
+
+
+            #context = "\n\n".join([f"[Score: {score:.2f}] {chunk}" for score, chunk in zip(scores, chunks)])
+
+            #with st.spinner("Generating a legal response..."):
+                #response = chatbot.generate_answer(prompt, context, language)
             inference_time = time.time() - start_time
 
             # Simulated typing animation
