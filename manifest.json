@@ -1,0 +1,15 @@
+{
+  "name": "Constitutional Law Assistant",
+  "short_name": "Law Assistant",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4A90E2",
+  "icons": [
+    {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/9/99/Symbol_scales_of_justice.svg",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
