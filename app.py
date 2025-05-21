@@ -22,7 +22,7 @@ st.set_page_config(
 )
 
 # Initialize Groq API
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "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")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "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")
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 
@@ -136,32 +136,31 @@ def get_chatbot():
     return RAGChatbot(faiss_path="faiss_index")
 
 
-def main():
-    # Sidebar
-    with st.sidebar:
-        st.title("⚙️ Settings")
-        language = st.selectbox(
-            "🌐 Select Language",
-            ["English","Hindi", "Turkish"],
-            key="language_select"
-        )
+def home_page():
+    st.markdown("<h1 style='text-align: center; color: #4A90E2;'>⚖️ Constitutional Law Assistant</h1>",
+                unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center;'>Your AI-powered legal research companion</h3>", unsafe_allow_html=True)
 
-        st.markdown("---")
-        st.markdown("### 📘 About")
-        st.markdown(
-            "This chatbot uses **FAISS** for vector search and **Groq LLM** to answer queries about **Constitutional Law**.")
-        st.markdown("Designed for legal professionals, students, and curious citizens.")
+    st.image("https://cdn-icons-png.flaticon.com/512/184/184530.png", width=120)  # Law icon
 
-    # Page Title
-    #st.markdown(
-    #    f"<h1 style='text-align: center; color: #4A90E2;'>⚖️ {'Constitutional Law Assistant' if language == 'English' else 'Anayasa Hukuku Asistanı'}</h1>",
-    #    unsafe_allow_html=True
-    #)
-    #st.markdown(
-    #    f"<p style='text-align: center;'> {'Ask anything about the Constitution below.' if language == 'English' else 'Anayasayla ilgili her şeyi sorabilirsiniz.'}</p>",
-    #    unsafe_allow_html=True
-    #)
+    st.markdown("### 🔍 Ask Legal Questions in Natural Language")
+    st.markdown("- Search Indian constitutional articles in English, Hindi, or Turkish.")
+    st.markdown("- Get context-aware answers with references and sources.")
+    st.markdown("- Powered by FAISS + Groq LLM.")
 
+    st.markdown("### ✨ Features")
+    st.markdown("- ⚖️ Multilingual support")
+    st.markdown("- 📄 PDF document intelligence")
+    st.markdown("- 🔗 Real-time fallback to Google search")
+    st.markdown("- 💬 Chat memory for continued conversations")
+
+    st.markdown("---")
+    st.markdown("📧 Contact: support@lawbot.ai")
+
+    if st.button("🚀 Launch Assistant"):
+        st.session_state.page = 'chat'
+
+def chat_interface(language):
     # Title based on language
     if language == "English":
         title = "Constitutional Law Assistant"
@@ -215,11 +214,10 @@ def main():
                 if language == "Hindi":
                     response = chatbot.translate_to_hindi(response)
 
+            # context = "\n\n".join([f"[Score: {score:.2f}] {chunk}" for score, chunk in zip(scores, chunks)])
 
-            #context = "\n\n".join([f"[Score: {score:.2f}] {chunk}" for score, chunk in zip(scores, chunks)])
-
-            #with st.spinner("Generating a legal response..."):
-                #response = chatbot.generate_answer(prompt, context, language)
+            # with st.spinner("Generating a legal response..."):
+            # response = chatbot.generate_answer(prompt, context, language)
             inference_time = time.time() - start_time
 
             # Simulated typing animation
@@ -234,15 +232,43 @@ def main():
                 for i, (meta, score) in enumerate(zip(metadatas, scores)):
                     st.markdown(
                         f"""
-                        - **Source {i + 1}**  
-                          📄 *{meta.get('source', 'N/A')}*  
-                          🌍 *{meta.get('language', 'N/A')}*  
-                          🧠 *Score:* `{score:.2f}`
-                        """
+                           - **Source {i + 1}**  
+                             📄 *{meta.get('source', 'N/A')}*  
+                             🌍 *{meta.get('language', 'N/A')}*  
+                             🧠 *Score:* `{score:.2f}`
+                           """
                     )
 
         st.session_state.messages.append({"role": "assistant", "content": response})
+        st.markdown("---")
+        st.markdown("### 📘 About")
+        st.markdown("This chatbot uses **FAISS** for vector search and **Groq LLM** to answer queries about **Constitutional Law**.")
+        st.markdown("Designed for legal professionals, students, and curious citizens.")
+
+
+def main():
+    # Language selection (global)
+    with st.sidebar:
+        st.title("⚙️ Settings")
+        language = st.selectbox("🌐 Select Language", ["English", "Hindi", "Turkish"], key="language_select")
+
+        if st.session_state.page == 'chat':
+            if st.button("🏠 Home"):
+                st.session_state.page = 'home'
+
+    if st.session_state.page == 'home':
+        home_page()
+    else:
+        chat_interface(language)
+
+
+
+
+
 
 
 if __name__ == "__main__":
+    if 'page' not in st.session_state:
+        st.session_state.page = 'home'
+
     main()

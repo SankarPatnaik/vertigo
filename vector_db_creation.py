@@ -63,29 +63,24 @@ class FAISSVectorDBCreator:
         print(f"FAISS index created with {len(chunks)} chunks in '{save_path}'")
         return index
 
+
 if __name__ == "__main__":
     # Initialize the creator
     creator = FAISSVectorDBCreator()
-    
-    # PDF paths
-    pdf_paths = [
-        #r"C:\cookie\RAG_DLM\data\Anayasa_English.pdf",
-        #r"C:\cookie\RAG_DLM\data\Anayasa-Turkish.pdf",
-        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\circular.pdf",
-        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\civil_code_1908.pdf",
-        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\Anayasa_English.pdf",
-        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\Anayasa-Turkish.pdf",
-        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\At_A_Glance-ENG.pdf",
-        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\Ebook-one-year-modi-2.0.pdf"
-    ]
-    
+
+    # Define the folder containing PDFs
+    pdf_folder_path = r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data"
+
+    # Get all PDF files in the folder
+    pdf_paths = [os.path.join(pdf_folder_path, f) for f in os.listdir(pdf_folder_path) if f.lower().endswith('.pdf')]
+
     # Load PDFs
     documents = creator.load_pdfs(pdf_paths)
     print(f"Loaded {len(documents)} pages from PDFs")
-    
+
     # Split documents into chunks
     chunks = creator.split_documents(documents)
     print(f"Split into {len(chunks)} chunks")
-    
+
     # Create FAISS index
     creator.create_faiss_index(chunks, save_path="faiss_index")

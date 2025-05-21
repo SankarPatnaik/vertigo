@@ -13,17 +13,13 @@ def main():
     print("Creating FAISS vector database...")
     import vector_db_creation
     creator = vector_db_creation.FAISSVectorDBCreator()
-    
-    pdf_paths = [
-        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\circular.pdf",
-        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\civil_code_1908.pdf",
-        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\Anayasa_English.pdf",
-        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\Anayasa-Turkish.pdf",
-        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\At_A_Glance-ENG.pdf",
-        r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data\Ebook-one-year-modi-2.0.pdf"
 
-    ]
-    
+    # Generic folder path
+    pdf_folder_path = r"C:\Users\patna\OneDrive\Desktop\RAG_DLM\vertigo\Data"
+
+    # Collect all PDF file paths from the folder
+
+    pdf_paths = [os.path.join(pdf_folder_path, f) for f in os.listdir(pdf_folder_path) if f.lower().endswith('.pdf')]
     documents = creator.load_pdfs(pdf_paths)
     chunks = creator.split_documents(documents)
     creator.create_faiss_index(chunks, save_path="faiss_index")
