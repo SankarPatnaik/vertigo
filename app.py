@@ -22,7 +22,7 @@ st.set_page_config(
 )
 
 # Initialize Groq API
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "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")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "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")
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 
